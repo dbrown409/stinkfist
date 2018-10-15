@@ -1,0 +1,21 @@
+#!/bin/bash
+
+##Written by Dan Brown##
+##This script can enumerate the SSL ciphers on a host and will display based on##
+##Version 5: adding more visual changes##
+
+echo -en "\e[38;5;82m Enter the IP address or DNS name:  \e[0m"
+        read NAME
+echo -en "\e[38;5;82m Enter the port number: \e[0m "
+        read PORT
+echo -e "\e[93;5m Scanning for SSL ciphers...\e[0m"
+echo -e "\e[93;5m##############################\e[0m"
+
+for v in ssl2 ssl3 tls1 tls1_1 tls1_2; do
+ for c in $(openssl ciphers 'ALL:NULL' | tr ':' ' '); do
+ openssl s_client -connect $NAME:$PORT \
+ -cipher $c -$v < /dev/null > /dev/null 2>&1 && echo "This cipher is supported by $NAME: " && echo -e "\e[31m$v:\t$c\e[0m"
+ done
+done
+
+echo -e "Scanning complete"
